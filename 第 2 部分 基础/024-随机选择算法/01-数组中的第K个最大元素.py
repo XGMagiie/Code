@@ -1,0 +1,31 @@
+"""
+    215.数组中的第K个最大元素
+    https://leetcode.cn/problems/kth-largest-element-in-an-array/description/
+"""
+from random import choice
+from typing import List
+
+
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        def quick_select(nums: List[int], k: int) -> int:
+            pivot = choice(nums)  # 随机选择基准数
+            big, equal, small = [], [], []
+            # 将大于、小于、等于 pivot 的元素划分至 big, small, equal 中
+            for num in nums:
+                if num > pivot:
+                    big.append(num)
+                elif num < pivot:
+                    small.append(num)
+                else:
+                    equal.append(num)
+            if k <= len(big):
+                # 第 k 大元素在 big 中，递归划分
+                return quick_select(big, k)
+            if len(nums) - len(small) < k:
+                # 第 k 大元素在 small 中，递归划分
+                return quick_select(small, k - len(nums) + len(small))
+            # 第 k 大元素在 equal 中，直接返回 pivot
+            return pivot
+
+        return quick_select(nums, k)
